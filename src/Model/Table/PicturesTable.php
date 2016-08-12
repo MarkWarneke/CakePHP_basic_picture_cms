@@ -70,5 +70,22 @@ class PicturesTable extends Table
             ->notEmpty('path');
 
         return $validator;
-    }
+	}
+
+	/**
+	 * The $query argument is a query builder instance.
+	 * $options array contains the 'tags' option passed
+	 * to find ('tagged') in our controller action
+	 * */
+	public function findTagged(Query $query, array $options)
+	{
+			return $this->find()
+					->distinct(['Pictures.id'])
+					->matching('Tags', function ($q) use ($options) {
+							if(empty($options['tags'])){
+									return $q->where(['Tags.title IS' => null]);
+							}
+							return $q->where(['Tags.title IN' => $options['tags']]);
+					});
+	}
 }

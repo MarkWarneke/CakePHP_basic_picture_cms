@@ -109,5 +109,18 @@ class PicturesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
-    }
+	}
+
+	public function tags() 
+	{
+			$tags = $this->request->params['pass'];
+			$pictures = $this->Pictures->find('tagged', [
+					'tags' => $tags
+			]);
+
+			$this->set([
+					'pictures' => $pictures,
+					'tags' => $tags
+			]);
+	}
 }

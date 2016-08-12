@@ -42,8 +42,8 @@ use Cake\Routing\Router;
  */
 Router::defaultRouteClass('DashedRoute');
 
-Router::scope('/pictures', 
-		['controller' => 'Pictures'],
+Router::scope('/picutres', 
+		['controller', => 'Pictures'],
 		function($routes) {
 				$routes->connect('/tagged/*', ['action' => 'tags']);
 		}
