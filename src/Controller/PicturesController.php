@@ -123,4 +123,18 @@ class PicturesController extends AppController
 					'tags' => $tags
 			]);
 	}
+
+	public function isAuthorized($user) 
+	{
+		$action = $this->request->params['action'];
+
+		if(in_array($action, ['index', 'add', 'tags'])) {
+				return true;
+		}
+		if (empty($this->request->params['pass'][0])) {
+				return false;
+		}
+
+		return parent::isAuthorized($user);
+	}
 }
