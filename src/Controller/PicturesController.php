@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
 
 /**
  * Pictures Controller
@@ -10,6 +11,12 @@ use App\Controller\AppController;
  */
 class PicturesController extends AppController
 {
+
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $this->Auth->allow(array('view', 'index'));
+    }
 
     /**
      * Index method
@@ -49,15 +56,52 @@ class PicturesController extends AppController
     public function add()
     {
         $picture = $this->Pictures->newEntity();
+		
         if ($this->request->is('post')) {
+			
+			debug($this->request->data);
+			
             $picture = $this->Pictures->patchEntity($picture, $this->request->data);
-            if ($this->Pictures->save($picture)) {
+			
+			$file = $picture['upload'];
+
+			$image_upload_path = WWW_ROOT . 'img' . DS . 'upload' . DS;
+			$this->log($image_upload_path);
+			$this->log($file);
+			
+			$ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
+			$this->log($ext);
+			$arr_ext = array('jpg', 'jpeg', 'gif'); //set allowed extensions
+			
+			if($file['error'])
+				$this->log($file['error']);
+
+			if (in_array($ext, $arr_ext) && is_uploaded_file($file['tmp_name']))
+			{
+								
+				$this->log('in moved');
+				
+				move_uploaded_file(
+					$file['tmp_name'],
+					$image_upload_path . $file['name']
+				);
+					
+				// store the filename in the array to be saved to the db
+				$picture['path'] = 'upload/' . $file['name'];
+				
+				            if ($this->Pictures->save($picture)) {
                 $this->Flash->success(__('The picture has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The picture could not be saved. Please, try again.'));
-            }
+				} else {
+					$this->Flash->error(__('The picture could not be saved. Please, try again.'));
+				}
+			}else {
+				$this->Flash->error(__('The picture could not be uploaded. Is it a jpg, jpeg or gif? Please, try again.'));
+			}
+		
+			
+
         }
         $tags = $this->Pictures->Tags->find('list', ['limit' => 200]);
         $this->set(compact('picture', 'tags'));
@@ -124,17 +168,5 @@ class PicturesController extends AppController
 			]);
 	}
 
-	public function isAuthorized($user) 
-	{
-		$action = $this->request->params['action'];
 
-		if(in_array($action, ['index', 'add', 'tags'])) {
-				return true;
-		}
-		if (empty($this->request->params['pass'][0])) {
-				return false;
-		}
-
-		return parent::isAuthorized($user);
-	}
 }

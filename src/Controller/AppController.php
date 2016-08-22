@@ -76,4 +76,17 @@ class AppController extends Controller
             $this->set('_serialize', true);
         }
     }
+	
+	public function isAuthorized($user = null) {
+		// Admin can access every action
+		if (isset($user['publisher']) && $user['publisher'] === true ) {
+			return true;
+		}
+
+		// Default deny
+		return false;
+
+    }
+	
+
 }

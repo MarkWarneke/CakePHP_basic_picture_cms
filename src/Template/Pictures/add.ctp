@@ -7,13 +7,13 @@
     </ul>
 </nav>
 <div class="pictures form large-9 medium-8 columns content">
-    <?= $this->Form->create($picture) ?>
+    <?= $this->Form->create($picture, array('type' => 'file')); ?>
     <fieldset>
         <legend><?= __('Add Picture') ?></legend>
         <?php
-            echo $this->Form->input('title');
+            echo $this->Form->input('title', array('required'=>true));
             echo $this->Form->input('description');
-            echo $this->Form->input('path');
+			echo $this->Form->input('upload', array('type' => 'file', 'required'=>true));
             echo $this->Form->input('tags._ids', ['options' => $tags]);
         ?>
     </fieldset>

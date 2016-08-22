@@ -20,6 +20,10 @@
             <th><?= __('Path') ?></th>
             <td><?= h($picture->path) ?></td>
         </tr>
+		<tr>
+			<th><?=__('Picture') ?></th>
+			<td><?= $this->Html->image($picture->path) ?> 
+		</tr>
         <tr>
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($picture->id) ?></td>

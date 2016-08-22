@@ -16,6 +16,7 @@
         <legend><?= __('Edit User') ?></legend>
         <?php
             echo $this->Form->input('email');
+			echo $this->Form->input('publisher');
             echo $this->Form->input('password');
         ?>
     </fieldset>
