@@ -37,6 +37,11 @@ class PagesController extends AppController
      */
     public function display()
     {
+		
+		$this->loadmodel('Pictures');
+		$pictures = $this->Pictures->find('all');
+		$this->set('pictures', $pictures);
+		
         $path = func_get_args();
 
         $count = count($path);

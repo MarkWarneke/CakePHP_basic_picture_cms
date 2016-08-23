@@ -63,41 +63,19 @@ class PicturesController extends AppController
 			
             $picture = $this->Pictures->patchEntity($picture, $this->request->data);
 			
-			$file = $picture['upload'];
-
-			$image_upload_path = WWW_ROOT . 'img' . DS . 'upload' . DS;
-			$this->log($image_upload_path);
-			$this->log($file);
+			$picture['path'] = $this->persistImage($picture['upload']);	
+			debug($picture['path']);
+			$picture['thumb'] = $this->persistThumbForImage($picture['path'], $picture['upload'], 20);
+			debug($picture['thumb']);
 			
-			$ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
-			$this->log($ext);
-			$arr_ext = array('jpg', 'jpeg', 'gif'); //set allowed extensions
+			debug($picture);
 			
-			if($file['error'])
-				$this->log($file['error']);
-
-			if (in_array($ext, $arr_ext) && is_uploaded_file($file['tmp_name']))
-			{
-								
-				$this->log('in moved');
-				
-				move_uploaded_file(
-					$file['tmp_name'],
-					$image_upload_path . $file['name']
-				);
-					
-				// store the filename in the array to be saved to the db
-				$picture['path'] = 'upload/' . $file['name'];
-				
-				            if ($this->Pictures->save($picture)) {
-                $this->Flash->success(__('The picture has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-				} else {
-					$this->Flash->error(__('The picture could not be saved. Please, try again.'));
-				}
-			}else {
-				$this->Flash->error(__('The picture could not be uploaded. Is it a jpg, jpeg or gif? Please, try again.'));
+			
+			if ($this->Pictures->save($picture)) {
+				$this->Flash->success(__('The picture has been saved.'));
+				return $this->redirect(['action' => 'index']);
+			} else {
+				$this->Flash->error(__('The picture could not be saved. Please, try again.'));
 			}
 		
 			
@@ -166,6 +144,110 @@ class PicturesController extends AppController
 					'pictures' => $pictures,
 					'tags' => $tags
 			]);
+	}
+	
+	/**
+	* Saves the given file into WWW_ROOT/img/upload
+	* returns the path to the persistet image if successfull
+	* @param image to persist
+	* @return file path
+	*/
+	private function persistImage($file) {
+		
+		$image_path = WWW_ROOT . 'img' . DS;
+		$image_upload_path = 'upload/';
+		$this->log($image_upload_path);
+		
+		$this->log($file);
+		
+		$ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
+		$this->log($ext);
+		$arr_ext = array('jpg', 'jpeg', 'gif'); //set allowed extensions
+		
+		if($file['error']) {
+			$this->Flash->error(__('The picture could not be uploaded. Is it a jpg, jpeg or gif? Please, try again.'));
+			return;
+		} elseif(in_array($ext, $arr_ext) && is_uploaded_file($file['tmp_name']))
+		{
+			$this->log('in moved');
+			
+			move_uploaded_file(
+				$file['tmp_name'],
+				$image_path . $image_upload_path . $file['name']
+			);
+				
+			// store the filename in the array to be saved to the db
+			return $image_upload_path . $file['name'];
+		} else {
+			$this->Flash->error(__('The picture could not be stored on the server. Please, try again.'));
+			return;
+		}
+	}
+	
+	/**
+	* compresses the given $source file and creates an image based on mime type (jpeg/png)
+	* Saves the image with given quality (value between 1 - 100) at the destination path
+	* @param source image
+	* @param destination path to store
+	* @quality quality of the saved image
+	*/
+	private function compressImage($source, $destination, $quality) {
+		$info = getimagesize($source);
+		debug($info);
+		
+		if ($info['mime'] == 'image/jpeg') {
+			$image = imagecreatefromjpeg($source);
+			debug($image);
+					
+			$thumb = $this->createThumb($image, 200);	
+			debug($thumb);
+			
+			imagejpeg($thumb, $destination, $quality);
+			imagedestroy($thumb);
+			imagedestroy($image);
+			
+		} elseif($info['mime'] == 'image/png') {
+			$image = imagecreatefrompng($source);
+			debug($image);
+			$thumb = $this->createThumb($image, 200);	
+			
+			imageAlphaBlending($thumb, true);
+			imageSaveAlpha($thumb, true);
+			$png_quality = 9 - ($quality * 9) / 100;
+			imagePng($thumb, $destination, $png_quality);
+			imagedestroy($thumb);
+			imagedestroy($image);
+		}
+		
+		debug($destination);
+		$this->log($destination);
+		
+		return $destination;
+	}
+	
+	
+	private function persistThumbForImage($path_to_persited, $image_meta, $quality) {
+		
+		$image_path = WWW_ROOT . 'img/';
+		$image_thumb_path = 'upload/thumb/';
+		$image_name_thumb_path = $image_thumb_path  . 'thumb_' . $image_meta['name'];
+		
+		$this->log($image_name_thumb_path);
+		$this->compressImage($image_path . $path_to_persited, $image_path . $image_name_thumb_path, $quality);
+		
+		return $image_name_thumb_path;
+	}
+	
+	private function createThumb($image, $thumbWidth) {
+		$width = imagesx($image);
+		$height = imagesy($image);
+		$new_width = $thumbWidth;
+		$new_height = floor($height * ($new_width / $width) );
+		$tmp_img = imagecreatetruecolor($new_width, $new_height);
+		imagecopyresized($tmp_img, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+		debug($tmp_img);
+		debug($image);
+		return $tmp_img;
 	}
 
 
