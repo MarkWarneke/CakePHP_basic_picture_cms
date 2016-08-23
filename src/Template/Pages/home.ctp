@@ -34,8 +34,8 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
         Falk Werths Fotografie
     </title>
 
-	<?= $this->Html->css('main.css') ?>
-	<?= $this->Html->css('noscript.css') ?>
+	<?= $this->Html->css('page/main.css') ?>
+	<?= $this->Html->css('page/noscript.css') ?>
 </head>
 <body class="is-loading-0 is-loading-1 is-loading-2">
 
@@ -45,7 +45,7 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 				<!-- Header -->
 					<header id="header">
 						<h1>Falk Werths</h1>
-						<p>Herzlich willkommen! <br /> Für weitere Informationen besuchen Sie <?= $this->Html->link('Home', '/home') ?>, nehmen Sie gerne Kontakt auf! </p>
+						<p>Herzlich willkommen! <br /> Für weitere Informationen besuchen Sie <?= $this->Html->link('Home', '/home') ?>, nehmen Sie gerne <?= $this->Html->link('Kontakt', '/home#contact') ?> auf! </p>
 						<ul class="icons">
 							<li><a href="http://www.facebook.com/falkwerths" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
 							<li><a href="http://www.instagram.de/falkwerths" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
@@ -70,18 +70,18 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 					</section>
 
 				<!-- Footer -->
-					<footer id="footer">
-						<ul class="copyright">
-							<li>&copy; Falk Werths.</li><li><?= $this->Html->link('Impressum', '/home#impressum') ?>.</li>
-						</ul>
-					</footer>
+				<footer id="footer">
+					<ul class="copyright">
+						<li>&copy; Falk Werths.</li><li><?= $this->Html->link('Impressum', '/home#impressum') ?>.</li>
+					</ul>
+				</footer>
 
 			</div>
 
 		<!-- Scripts -->
-		<?= $this->Html->script('jquery.min.js') ?>
-		<?= $this->Html->script('skel.min.js') ?>
-		<?= $this->Html->script('main.js') ?>
+		<?= $this->Html->script('page/jquery.min.js') ?>
+		<?= $this->Html->script('page/skel.min.js') ?>
+		<?= $this->Html->script('page/main.js') ?>
 
 	</body>
 

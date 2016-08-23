@@ -38,6 +38,13 @@ class HomeController extends AppController
     public function display()
     {
 		
+		$this->loadmodel('Pictures');
+		$pictures = $this->Pictures->find('all', [
+		'limit' => 6,
+		'order' => 'Pictures.created DESC'
+ 		]);
+		$this->set('pictures', $pictures);
+		
         $path = func_get_args();
 
         $count = count($path);
