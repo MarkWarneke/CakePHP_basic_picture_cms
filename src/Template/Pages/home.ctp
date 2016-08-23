@@ -31,7 +31,7 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?= $cakeDescription ?>
+        Falk Werths Fotografie
     </title>
 
 	<?= $this->Html->css('main.css') ?>
@@ -44,13 +44,13 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 
 				<!-- Header -->
 					<header id="header">
-						<h1>Lens</h1>
-						<p>Just another fine responsive site template by <a href="http://html5up.net">HTML5 UP</a></p>
+						<h1>Falk Werths</h1>
+						<p>Herzlich willkommen! <br /> Für weitere Informationen besuchen Sie <?= $this->Html->link('Home', '/home') ?>, nehmen Sie gerne Kontakt auf! </p>
 						<ul class="icons">
-							<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon fa-github"><span class="label">Github</span></a></li>
-							<li><a href="#" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+							<li><a href="http://www.facebook.com/falkwerths" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+							<li><a href="http://www.instagram.de/falkwerths" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="http://www.flickr.com/falkwerths" class="icon fa-flickr"><span class="label">Flickr</span></a></li>
+							<li><a href="http://mailto:info@falk-werths.de" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
 						</ul>
 					</header>
 
@@ -72,7 +72,7 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 				<!-- Footer -->
 					<footer id="footer">
 						<ul class="copyright">
-							<li>&copy; Untitled.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a>.</li>
+							<li>&copy; Falk Werths.</li><li><?= $this->Html->link('Impressum', '/home#impressum') ?>.</li>
 						</ul>
 					</footer>
 

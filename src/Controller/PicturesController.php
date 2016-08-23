@@ -15,7 +15,6 @@ class PicturesController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(array('view', 'index'));
     }
 
     /**
@@ -225,7 +224,9 @@ class PicturesController extends AppController
 		return $destination;
 	}
 	
-	
+	/**
+	* Saves the compresse the image 
+	*/
 	private function persistThumbForImage($path_to_persited, $image_meta, $quality) {
 		
 		$image_path = WWW_ROOT . 'img/';
@@ -238,6 +239,11 @@ class PicturesController extends AppController
 		return $image_name_thumb_path;
 	}
 	
+	/*
+	* Creates new image from passed image and crops the new image to passed with
+	* @param image to be cloned
+	* @param width the new image should have
+	*/
 	private function createThumb($image, $thumbWidth) {
 		$width = imagesx($image);
 		$height = imagesy($image);
