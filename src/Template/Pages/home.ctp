@@ -35,7 +35,6 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
     </title>
 
 	<?= $this->Html->css('page/main.css') ?>
-	<?= $this->Html->css('page/noscript.css') ?>
 </head>
 <body class="is-loading-0 is-loading-1 is-loading-2">
 

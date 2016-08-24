@@ -64,7 +64,7 @@ class PicturesController extends AppController
 			
 			$picture['path'] = $this->persistImage($picture['upload']);	
 			debug($picture['path']);
-			$picture['thumb'] = $this->persistThumbForImage($picture['path'], $picture['upload'], 20);
+			$picture['thumb'] = $this->createThumb($picture['path'], $picture['upload'], 50);
 			debug($picture['thumb']);
 			
 			debug($picture);
@@ -193,31 +193,31 @@ class PicturesController extends AppController
 	private function compressImage($source, $destination, $quality) {
 		$info = getimagesize($source);
 		debug($info);
-		
+		var $image;
+		var $thumb;
+
 		if ($info['mime'] == 'image/jpeg') {
 			$image = imagecreatefromjpeg($source);
 			debug($image);
 					
-			$thumb = $this->createThumb($image, 200);	
+			$thumb = $this->resizeImage($image, 200);	
 			debug($thumb);
 			
 			imagejpeg($thumb, $destination, $quality);
-			imagedestroy($thumb);
-			imagedestroy($image);
 			
 		} elseif($info['mime'] == 'image/png') {
 			$image = imagecreatefrompng($source);
 			debug($image);
-			$thumb = $this->createThumb($image, 200);	
+			$thumb = $this->resizeImage($image, 200);	
 			
 			imageAlphaBlending($thumb, true);
 			imageSaveAlpha($thumb, true);
 			$png_quality = 9 - ($quality * 9) / 100;
 			imagePng($thumb, $destination, $png_quality);
-			imagedestroy($thumb);
-			imagedestroy($image);
 		}
 		
+			imagedestroy($image);
+			imagedestroy($thumb);
 		debug($destination);
 		$this->log($destination);
 		
@@ -227,7 +227,7 @@ class PicturesController extends AppController
 	/**
 	* Saves the compresse the image 
 	*/
-	private function persistThumbForImage($path_to_persited, $image_meta, $quality) {
+	private function createThumb($path_to_persited, $image_meta, $quality) {
 		
 		$image_path = WWW_ROOT . 'img/';
 		$image_thumb_path = 'upload/thumb/';
@@ -240,11 +240,11 @@ class PicturesController extends AppController
 	}
 	
 	/*
-	* Creates new image from passed image and crops the new image to passed with
+	* Creates new image from passed image and crops the new image to passed width
 	* @param image to be cloned
 	* @param width the new image should have
 	*/
-	private function createThumb($image, $thumbWidth) {
+	private function resizeImage($image, $thumbWidth) {
 		$width = imagesx($image);
 		$height = imagesy($image);
 		$new_width = $thumbWidth;

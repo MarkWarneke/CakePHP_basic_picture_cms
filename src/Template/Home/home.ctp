@@ -78,7 +78,6 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 						<h2>What I Do</h2>
 					</header>
 					<p>Ich fotografiere
-						<?= $this->Html->link('Stay in contact', '#contact') ?>
 					</p>
 				</div>
 				<a href="#two" class="button style2 down anchored">Next</a>
