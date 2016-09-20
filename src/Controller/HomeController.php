@@ -17,6 +17,7 @@ namespace App\Controller;
 use Cake\Core\Configure;
 use Cake\Network\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
+use App\Form\ContactForm;
 
 /**
  * Static content controller
@@ -37,14 +38,22 @@ class HomeController extends AppController
      */
     public function display()
     {
-		
-		$this->loadmodel('Pictures');
-		$pictures = $this->Pictures->find('all', [
-		'limit' => 6,
-		'order' => 'Pictures.created DESC'
- 		]);
-		$this->set('pictures', $pictures);
-		
+
+        $this->loadmodel('Pictures');
+        
+        $pictures = $this->Pictures->find('all', [
+            'limit' => 6,
+            'order' => 'Pictures.created DESC'
+        ]);
+        $this->set('pictures', $pictures);
+
+        $contact = new ContactForm();
+        if ($this->request->is('post')) {
+            $this->handleContact($contact, $this->request->data);
+        } 
+
+        $this->set('contact', $contact);
+
         $path = func_get_args();
 
         $count = count($path);
@@ -69,5 +78,17 @@ class HomeController extends AppController
             }
             throw new NotFoundException();
         }
+    }
+
+
+    public function handleContact($contact, $data) 
+    {
+        debug($data);
+        if($contact->execute($data)) {
+            $this->Flash->success('Danke für die Nachricht');
+        } else {
+            $this->Flash->error('Fehler beim versenden');
+        }
+        
     }
 }

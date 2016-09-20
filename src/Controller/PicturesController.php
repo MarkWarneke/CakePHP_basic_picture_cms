@@ -55,29 +55,29 @@ class PicturesController extends AppController
     public function add()
     {
         $picture = $this->Pictures->newEntity();
-		
+
         if ($this->request->is('post')) {
-			
-			debug($this->request->data);
-			
+
+            debug($this->request->data);
+
             $picture = $this->Pictures->patchEntity($picture, $this->request->data);
-			
-			$picture['path'] = $this->persistImage($picture['upload']);	
-			debug($picture['path']);
-			$picture['thumb'] = $this->createThumb($picture['path'], $picture['upload'], 50);
-			debug($picture['thumb']);
-			
-			debug($picture);
-			
-			
+
+            $picture['path'] = $this->persistImage($picture['upload']); 
+            debug($picture['path']);
+            $picture['thumb'] = $this->createThumb($picture['path'], $picture['upload'], 50);
+            debug($picture['thumb']);
+
+            debug($picture);
+
+
 			if ($this->Pictures->save($picture)) {
 				$this->Flash->success(__('The picture has been saved.'));
 				return $this->redirect(['action' => 'index']);
 			} else {
 				$this->Flash->error(__('The picture could not be saved. Please, try again.'));
 			}
-		
-			
+
+
 
         }
         $tags = $this->Pictures->Tags->find('list', ['limit' => 200]);
@@ -130,131 +130,124 @@ class PicturesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
-	}
+    }
 
-	public function tags() 
-	{
-			$tags = $this->request->params['pass'];
-			$pictures = $this->Pictures->find('tagged', [
-					'tags' => $tags
-			]);
+    public function tags() 
+    {
+        $tags = $this->request->params['pass'];
+        $pictures = $this->Pictures->find('tagged', [
+            'tags' => $tags
+        ]);
 
-			$this->set([
-					'pictures' => $pictures,
-					'tags' => $tags
-			]);
-	}
-	
-	/**
-	* Saves the given file into WWW_ROOT/img/upload
-	* returns the path to the persistet image if successfull
-	* @param image to persist
-	* @return file path
-	*/
-	private function persistImage($file) {
-		
-		$image_path = WWW_ROOT . 'img' . DS;
-		$image_upload_path = 'upload/';
-		$this->log($image_upload_path);
-		
-		$this->log($file);
-		
-		$ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
-		$this->log($ext);
-		$arr_ext = array('jpg', 'jpeg', 'gif'); //set allowed extensions
-		
-		if($file['error']) {
-			$this->Flash->error(__('The picture could not be uploaded. Is it a jpg, jpeg or gif? Please, try again.'));
-			return;
-		} elseif(in_array($ext, $arr_ext) && is_uploaded_file($file['tmp_name']))
-		{
-			$this->log('in moved');
-			
-			move_uploaded_file(
-				$file['tmp_name'],
-				$image_path . $image_upload_path . $file['name']
-			);
-				
-			// store the filename in the array to be saved to the db
-			return $image_upload_path . $file['name'];
-		} else {
-			$this->Flash->error(__('The picture could not be stored on the server. Please, try again.'));
-			return;
-		}
-	}
-	
-	/**
-	* compresses the given $source file and creates an image based on mime type (jpeg/png)
-	* Saves the image with given quality (value between 1 - 100) at the destination path
-	* @param source image
-	* @param destination path to store
-	* @quality quality of the saved image
-	*/
-	private function compressImage($source, $destination, $quality) {
-		$info = getimagesize($source);
-		debug($info);
-		var $image;
-		var $thumb;
+        $this->set([
+            'pictures' => $pictures,
+            'tags' => $tags
+        ]);
+    }
 
-		if ($info['mime'] == 'image/jpeg') {
-			$image = imagecreatefromjpeg($source);
-			debug($image);
-					
-			$thumb = $this->resizeImage($image, 200);	
-			debug($thumb);
-			
-			imagejpeg($thumb, $destination, $quality);
-			
-		} elseif($info['mime'] == 'image/png') {
-			$image = imagecreatefrompng($source);
-			debug($image);
-			$thumb = $this->resizeImage($image, 200);	
-			
-			imageAlphaBlending($thumb, true);
-			imageSaveAlpha($thumb, true);
-			$png_quality = 9 - ($quality * 9) / 100;
-			imagePng($thumb, $destination, $png_quality);
-		}
-		
-			imagedestroy($image);
-			imagedestroy($thumb);
-		debug($destination);
-		$this->log($destination);
-		
-		return $destination;
-	}
-	
-	/**
-	* Saves the compresse the image 
-	*/
-	private function createThumb($path_to_persited, $image_meta, $quality) {
-		
-		$image_path = WWW_ROOT . 'img/';
-		$image_thumb_path = 'upload/thumb/';
-		$image_name_thumb_path = $image_thumb_path  . 'thumb_' . $image_meta['name'];
-		
-		$this->log($image_name_thumb_path);
-		$this->compressImage($image_path . $path_to_persited, $image_path . $image_name_thumb_path, $quality);
-		
-		return $image_name_thumb_path;
-	}
-	
-	/*
-	* Creates new image from passed image and crops the new image to passed width
-	* @param image to be cloned
-	* @param width the new image should have
-	*/
-	private function resizeImage($image, $thumbWidth) {
-		$width = imagesx($image);
-		$height = imagesy($image);
-		$new_width = $thumbWidth;
-		$new_height = floor($height * ($new_width / $width) );
-		$tmp_img = imagecreatetruecolor($new_width, $new_height);
-		imagecopyresized($tmp_img, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-		debug($tmp_img);
-		debug($image);
-		return $tmp_img;
-	}
+    /**
+     * Saves the given file into WWW_ROOT/img/upload
+     * returns the path to the persistet image if successfull
+     * @param image to persist
+     * @return file path
+     */
+    private function persistImage($file) {
+
+        $image_path = WWW_ROOT . 'img' . DS;
+        $image_upload_path = 'upload/';
+        $this->log($image_upload_path);
+
+        $this->log($file);
+
+        $ext = substr(strtolower(strrchr($file['name'], '.')), 1); //get the extension
+        $this->log($ext);
+        $arr_ext = array('jpg', 'jpeg', 'gif'); //set allowed extensions
+
+        if($file['error']) {
+            $this->Flash->error(__('The picture could not be uploaded. Is it a jpg, jpeg or gif? Please, try again.'));
+            return;
+        } elseif(in_array($ext, $arr_ext) && is_uploaded_file($file['tmp_name']))
+        {
+            $this->log('in moved');
+
+            move_uploaded_file(
+                $file['tmp_name'],
+                $image_path . $image_upload_path . $file['name']
+            );
+
+            // store the filename in the array to be saved to the db
+            return $image_upload_path . $file['name'];
+        } else {
+            $this->Flash->error(__('The picture could not be stored on the server. Please, try again.'));
+            return;
+        }
+    }
+
+    /**
+     * compresses the given $source file and creates an image based on mime type (jpeg/png)
+     * Saves the image with given quality (value between 1 - 100) at the destination path
+     * @param source image
+     * @param destination path to store
+     * @quality quality of the saved image
+     */
+    private function compressImage($source, $destination, $quality) {
+        $info = getimagesize($source);
+        debug($info);
+
+
+        if ($info['mime'] == 'image/jpeg') {
+            $image = imagecreatefromjpeg($source);
+            $thumb = $this->resizeImage($image, 200); 
+            imagejpeg($thumb, $destination, $quality);
+
+        } elseif($info['mime'] == 'image/png') {
+            $image = imagecreatefrompng($source);
+            $thumb = $this->resizeImage($image, 200); 
+            imageAlphaBlending($thumb, true);
+            imageSaveAlpha($thumb, true);
+            $png_quality = 9 - ($quality * 9) / 100;
+            imagePng($thumb, $destination, $png_quality);
+        }
+
+        imagedestroy($image);
+        imagedestroy($thumb);
+        debug($destination);
+        $this->log($destination);
+
+        return $destination;
+    }
+
+    /**
+     * Saves the compresse the image 
+     */
+    private function createThumb($path_to_persited, $image_meta, $quality) {
+
+        $image_path = WWW_ROOT . 'img/';
+        $image_thumb_path = 'upload/thumb/';
+        $image_name_thumb_path = $image_thumb_path  . 'thumb_' . $image_meta['name'];
+
+        $this->log($image_name_thumb_path);
+        $this->compressImage($image_path . $path_to_persited, $image_path . $image_name_thumb_path, $quality);
+
+        return $image_name_thumb_path;
+    }
+
+    /*
+     * Creates new image from passed image and crops the new image to passed width
+     * @param image to be cloned
+     * @param width the new image should have
+     */
+    private function resizeImage($image, $thumbWidth) {
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $new_width = $thumbWidth;
+        $new_height = floor($height * ($new_width / $width) );
+        $tmp_img = imagecreatetruecolor($new_width, $new_height);
+        imagecopyresized($tmp_img, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+        debug($tmp_img);
+        debug($image);
+        return $tmp_img;
+    }
 
 
 }

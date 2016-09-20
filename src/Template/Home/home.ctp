@@ -35,6 +35,18 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
     </title>
 
 	<?= $this->Html->css('home/main.css') ?>
+	
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-55646381-1', 'auto');
+	  ga('send', 'pageview');
+
+	</script>
+
 </head>
 <body>
 
@@ -64,7 +76,7 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 					<header>
 						<h2>Hey.</h2>
 					</header>
-					<p>Willkommen auf meiner Homepage</p>
+					<p></p>
 					<footer>
 						<a href="#one" class="button style2 down">More</a>
 					</footer>
@@ -77,7 +89,13 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 					<header>
 						<h2>What I Do</h2>
 					</header>
-					<p>Ich fotografiere
+					<p>
+						Vieles. 
+						Neben Produkt- und Architekturfotografie, mache ich viel Freestyle. 
+						Fotos von Menschen sind aufregend aber auch der Bereich Streetphotography macht mir viel Spaß.
+
+						Wenn Sie Ihre Website, andere Onlinemedien oder Broschüre mit neuen Bildern auffrischen möchten, sprechen Sie mich gerne an.
+						Auch Personenfotos mache ich gerne…
 					</p>
 				</div>
 				<a href="#two" class="button style2 down anchored">Next</a>
@@ -89,7 +107,13 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 					<header>
 						<h2>Who I Am</h2>
 					</header>
-					<p>ich bin Falk Werths, ein 26 Jahre junger Fotograf und Student (Kommunikationswissenschaft), der sein Hobby zum Beruf gemacht hat. Aufgewachsen mit einer kleinen analogen Olympus, fotografiere ich nun mit meinen Spiegelrelfexkameras Sony Alpha 330 und seit Neuestem auch im Vollformat mit meiner Nikon D610.</p>
+					<p>
+						Als ich 8 Jahre alt war, schenkte mir mein Vater eine alte analoge Kamera vom Flohmarkt. 
+						Nach der Entwicklung von mehreren Dutzend Filmen und einigen Fotos, die schlicht weg einfach nur schwarz waren, stieg ich mit einer Sony Alpha in die digitale Fotografie ein. 
+						Mittlerweile fotografiere ich mit meiner Nikon D610 im Vollformat.
+
+						Nun bin ich 26 Jahre alt und studiere Kommunikationswissenschaft in Münster, nebenbei arbeite ich als Fotograf für verschiedene Unternehmen wie „Essmann’s Backstube“ oder „Saint-Gobain Glass“ sowie kleinere Einzelhändler. 
+					</p>
 				</div>
 				<a href="#work" class="button style2 down anchored">Next</a>
 			</section>
@@ -99,20 +123,23 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 				<div class="content container">
 					<header>
 						<h2>My Work</h2>
-						<p>Hier präsentiere ich kurz meine letzten Ergebnisse. <br />
-						Meine Galerie findet ihr hier <?= $this->Html->link('... zur Galerie', '/pages') ?></p>
+						<p>
+							Von Produktfotografie bis hin zu Streetphotography finden Sie hier kleine Beispiele meiner Arbeit als Fotograf. 
+							<br />
+							Meine Galerie findet ihr hier <?= $this->Html->link('... zur Galerie', '/pages') ?>
+						</p>
 					</header>
 
 					<!-- Lightbox Gallery  -->
 						<div class="container 75% gallery">
 						
 							<?php 
-							$i = 0;
+							$i = 1;
 							foreach ($pictures as $picture): 
-							$i++;
+
 							?>
 							
-								<?php if(!($i % 2)): ?>
+								<?php if($i % 3 == 1): ?>
 									<div class="row 0% images">
 								<?php endif; ?>
 								
@@ -123,10 +150,12 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 									</a>
 								</div>
 								
-								<?php if(!($i % 2)): ?>
+								<?php if($i % 3 == 0): ?>
 									</div>
 								<?php endif; ?>
-							<?php endforeach; ?>
+							<?php 
+							$i++;
+							endforeach; ?>
 						</div>
 
 				</div>
@@ -137,28 +166,40 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 			<div class="content container">
 				<header>
 					<h2>Say Hello.</h2>
-					<p>Wollt ihr mir Feedback geben, oder wollen Sie mit mir zusammen arbeiten? <br />
-					Schreibt mir eine Nachricht!</p>
+					<p>
+						Wenn Sie Fragen, Wünsche oder Anregungen haben, schreiben Sie mir gerne oder rufen Sie mich an: <a href="tel:+4915773448510">+49 (0) 1577 3448 510</a>
+						<br>
+						Ich freue mich auf eine spannende Zusammenarbeit!
+					</p>
 				</header>
 				<div class="box container 75%">
 
-				<!-- Contact Form -->
+                <!-- Contact Form -->
+<?= $this->Form->create($contact); ?>
+
 						<form method="post" action="#">
 							<div class="row 50%">
-								<div class="6u 12u(mobile)"><input type="text" name="name" placeholder="Name" /></div>
-								<div class="6u 12u(mobile)"><input type="email" name="email" placeholder="Email" /></div>
+                                <div class="6u 12u(mobile)">
+<?= $this->Form->input('name', array('required'=>true, 'placeholder'=>'Name')); ?>
+                                </div>
+                                <div class="6u 12u(mobile)">
+<?= $this->Form->input('email', array('required'=>true, 'placeholder'=>'Email')); ?>
+                                </div>
 							</div>
 							<div class="row 50%">
-								<div class="12u"><textarea name="message" placeholder="Message" rows="6"></textarea></div>
+                            <div class="12u">
+<?= $this->Form->textarea('message', array('required'=>true, 'placeholder'=>'Message', 'type'=>'text')); ?>
 							</div>
 							<div class="row">
 								<div class="12u">
-									<ul class="actions">
-										<li><input type="submit" value="Send Message" /></li>
+                                <ul class="actions">
+                                    <li>
+                                    <?= $this->Form->button(__('Send Message')) ?>
+                                        </li>
 									</ul>
 								</div>
 							</div>
-						</form>
+<?= $this->Form->end() ?>
 
 				</div>
 			</div>
@@ -217,10 +258,10 @@ $cakeDescription = 'CakePHP: the rapid development PHP framework';
 
 				<!-- Icons -->
 					<ul class="actions">
-						<li><a href="http://www.facebook.com/falkwerths" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-						<li><a href="http://www.instagram.de/falkwerths" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-						<li><a href="http://www.flickr.com/falkwerths" class="icon fa-flickr"><span class="label">Flickr</span></a></li>
-						<li><a href="http://mailto:info@falk-werths.de" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+						<li><a href="https://www.facebook.com/pages/Falk-Werths/" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+						<li><a href="http://instagram.com/falk_we" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="https://www.flickr.com/people/123684537@N05/" class="icon fa-flickr"><span class="label">Flickr</span></a></li>
+						<li><a href="mailto:info@falk-werths.de" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
 					</ul>
 
 				<!-- Menu -->
